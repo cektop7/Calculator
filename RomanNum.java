@@ -21,15 +21,20 @@ public class RomanNum {
     protected boolean isRoman(String romanNum) {
         romanNum = romanNum.toUpperCase();
 
-        String alphabet = "^[IVXLCDM]+$";
+        if (!romanNum.matches("^[IVXLCDM]+$")) return false;
+        if (romanNum.matches("(\\w)\\1{4,}")) return false;
 
-        return romanNum.matches(alphabet);
+        return true;
     }
 
     protected int romanToInt(String romanNum) {
         romanNum = romanNum.toUpperCase();
+
         int value = 0;
-        int prev = 0, curr = 0;
+
+        int prev = 0;
+        int curr = romanNumbers.get(Character.toString(romanNum.charAt(0)));
+
         for (int pos = 1; pos < romanNum.length(); pos++) {
             prev = romanNumbers.get(Character.toString(romanNum.charAt(pos - 1)));
             curr = romanNumbers.get(Character.toString(romanNum.charAt(pos)));
@@ -88,8 +93,13 @@ public class RomanNum {
     }
 
     public RomanNum(String initValue) {
-        if (!this.isRoman(initValue)) throw new RuntimeException("Error. Invalid roman number.");
-        this.value = this.romanToInt(initValue);
+        try {
+            this.value = Integer.parseInt(initValue);
+        } catch (NumberFormatException e) {
+            if (!this.isRoman(initValue)) throw new RuntimeException("Error. Invalid roman number.");
+            this.value = this.romanToInt(initValue);
+        }
+        if (this.value > 3999) throw new RuntimeException("Error. Roman numbers can be in the range from 1 to 3999.");
     }
 
     public int getIntValue() {
@@ -98,5 +108,21 @@ public class RomanNum {
 
     public String getValue() {
         return intToRoman(this.value);
+    }
+
+    public RomanNum add(RomanNum romanNum) {
+        return new RomanNum(this.value + romanNum.getIntValue());
+    }
+
+    public RomanNum sub(RomanNum romanNum) {
+        return new RomanNum(this.value - romanNum.getIntValue());
+    }
+
+    public RomanNum mul(RomanNum romanNum) {
+        return new RomanNum(this.value * romanNum.getIntValue());
+    }
+
+    public RomanNum div(RomanNum romanNum) {
+        return new RomanNum(this.value / romanNum.getIntValue());
     }
 }
