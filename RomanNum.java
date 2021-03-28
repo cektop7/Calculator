@@ -34,29 +34,28 @@ public class RomanNum {
             prev = romanNumbers.get(Character.toString(romanNum.charAt(pos - 1)));
             curr = romanNumbers.get(Character.toString(romanNum.charAt(pos)));
             if (prev >= curr) value += prev; else value -= prev;
-        }
 
+            if (value + curr > 3999) throw new RuntimeException("Error. Invalid roman number.");
+        }
         return value + curr;
     }
 
     protected String intToRoman(int num) {
-        if (num > 3999) return "";
-
         String roman = "";
         while (num > 0) {
             int dig = Character.getNumericValue(Integer.toString(num).charAt(0));
             int pow = Integer.toString(num).length() - 1;
-            char[] letters = {'M'};
+            String[] letters = {"M"};
 
             switch (pow) {
                 case 2:
-                    letters = new char[] {'C', 'D', 'M'};
+                    letters = new String[] {"C", "D", "M"};
                     break;
                 case 1:
-                    letters = new char[] {'X', 'L', 'C'};
+                    letters = new String[] {"X", "L", "C"};
                     break;
                 case 0:
-                    letters = new char[] {'I', 'V', 'X'};
+                    letters = new String[] {"I", "V", "X"};
                     break;
             }
 
@@ -78,24 +77,26 @@ public class RomanNum {
                     roman += letters[0] + letters[2];
             }
 
-            num -= Math.pow(10, pow) * Character.getNumericValue(dig);
+            num -= Math.pow(10, pow) * dig;
         }
         return roman;
     }
 
     public RomanNum(int initValue) {
+        if (initValue > 3999) throw new RuntimeException("Error. Roman numbers can be in the range from 1 to 3999.");
         this.value = initValue;
     }
 
     public RomanNum(String initValue) {
+        if (!this.isRoman(initValue)) throw new RuntimeException("Error. Invalid roman number.");
         this.value = this.romanToInt(initValue);
     }
 
-    public int toInt() {
+    public int getIntValue() {
         return this.value;
     }
 
-    public String value() {
+    public String getValue() {
         return intToRoman(this.value);
     }
 }
